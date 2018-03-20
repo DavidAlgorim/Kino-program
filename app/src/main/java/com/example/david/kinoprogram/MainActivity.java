@@ -1,6 +1,7 @@
 package com.example.david.kinoprogram;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -9,11 +10,23 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.webkit.WebView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import org.xmlpull.v1.XmlPullParserException;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.util.List;
+import java.net.URL;
+
 public class MainActivity extends AppCompatActivity {
+    private static final String URL =
+            "https://www.kinoaero.cz/export/?";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +56,8 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(myIntent);
             }
         });
+
+        new DownloadXmlTask().execute(URL);
     }
 
     @Override
@@ -66,4 +81,64 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+
+
+    private class DownloadXmlTask extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected String doInBackground(String... urls) {
+            try {
+                return loadXmlFromNetwork(urls[0]);
+            } catch (IOException e) {
+                return getResources().getString(R.string.connection_error);
+            } catch (XmlPullParserException e) {
+                return getResources().getString(R.string.xml_error);
+            }
+        }
+        @Override
+        protected void onPostExecute(String result) {
+            setContentView(R.layout.cinema_list);
+            WebView myWebView = (WebView) findViewById(R.id.webview);
+            myWebView.loadData(result, "text/html", null);
+        }
+    }
+
+    private String loadXmlFromNetwork(String urlString) throws XmlPullParserException, IOException {
+        InputStream stream = null;
+        XmlParser feedXmlParser = new XmlParser();
+        List<XmlParser.Entry> entries = null;
+        String url = null;
+        StringBuilder htmlString = new StringBuilder();
+        try {
+            stream = downloadUrl(urlString);
+            entries = feedXmlParser.parse(stream);
+        } finally {
+            if (stream != null) {
+                stream.close();
+            }
+        }
+
+        for (XmlParser.Entry entry : entries) {
+            htmlString.append(entry.email);
+            htmlString.append(entry.phone);
+
+        }
+        return htmlString.toString();
+    }
+    private InputStream downloadUrl(String urlString) throws IOException {
+        URL url = new URL(urlString);
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setReadTimeout(10000 /* milliseconds */);
+        conn.setConnectTimeout(15000 /* milliseconds */);
+        conn.setRequestMethod("GET");
+        conn.setDoInput(true);
+        conn.connect();
+        InputStream stream = conn.getInputStream();
+        return stream;
+    }
+
+
+
+
 }
