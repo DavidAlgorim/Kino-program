@@ -35,7 +35,7 @@ public class XmlParser {
                 continue;
             }
             String name = parser.getName();
-            if (name.equals("kult:Institution")) {
+            if (name.equals("item")) {
                 entries.add(readEntry(parser));
             } else {
                 skip(parser);
@@ -44,55 +44,129 @@ public class XmlParser {
         return entries;
     }
     public static class Entry {
-        public final String email;
-        public final String phone;
+        public final String title;
+        public final String description;
+        public final String link;
+        public final String startDate;
+        public final String endDate;
+        public final String location;
+        public final String organizer;
 
-        private Entry(String email,String phone) {
-            this.email = email;
-            this.phone=phone;
+        private Entry(String title,String description, String link,
+                      String startDate, String endDate, String location, String organizer) {
+            this.title = title;
+            this.description = description;
+            this.link = link;
+            this.startDate = startDate;
+            this.endDate = endDate;
+            this.location = location;
+            this.organizer = organizer;
+        }
+
+        public String getTitle() {
+            return title;
+        }
+
+        public String getDescription() {
+            return description;
+        }
+
+        public String getLink() {
+            return link;
+        }
+
+        public String getStartDate() {
+            return startDate;
+        }
+
+        public String getEndDate() {
+            return endDate;
+        }
+
+        public String getLocation() {
+            return location;
+        }
+
+        public String getOrganizer() {
+            return organizer;
         }
     }
     private Entry readEntry(XmlPullParser parser) throws XmlPullParserException, IOException {
-        parser.require(XmlPullParser.START_TAG, ns, "kult:Institution");
-        String email = null;
-        String phone = null;
+        parser.require(XmlPullParser.START_TAG, ns, "item");
+        String title = null;
+        String description = null;
+        String link = null;
+        String startDate = null;
+        String endDate = null;
+        String location = null;
+        String organizer = null;
         while (parser.next() != XmlPullParser.END_TAG) {
             if (parser.getEventType() != XmlPullParser.START_TAG) {
                 continue;
             }
             String name = parser.getName();
-            if (name.equals("kult:email")) {
-                email = readTitle(parser);
-            } else if (name.equals("kult:phone")) {
-                phone = readPhone(parser);
+            if (name.equals("title")) {
+                title = readTitle(parser);
+            } else if (name.equals("description")) {
+                description = readDescription(parser);
+            } else if (name.equals("link")) {
+                link = readLink(parser);
+            } else if (name.equals("ev:startdate")) {
+                startDate = readStart(parser);
+            } else if (name.equals("ev:enddate ")) {
+                endDate = readEnd(parser);
+            } else if (name.equals("ev:location ")) {
+                location = readLocation(parser);
+            } else if (name.equals("ev:organizer ")) {
+                organizer = readOrganizer(parser);
             } else {
                 skip(parser);
             }
         }
-        return new Entry(email,phone);
+        return new Entry(title,description, link,
+                startDate, endDate, location,organizer);
     }
     private String readTitle(XmlPullParser parser) throws IOException, XmlPullParserException {
-        parser.require(XmlPullParser.START_TAG, ns, "kult:email");
-        String email = readText(parser);
-        parser.require(XmlPullParser.END_TAG, ns, "kult:email");
-        return email;
+        parser.require(XmlPullParser.START_TAG, ns, "title");
+        String title = readText(parser);
+        parser.require(XmlPullParser.END_TAG, ns, "title");
+        return title;
     }
-    private String readPhone(XmlPullParser parser) throws IOException, XmlPullParserException {
-        parser.require(XmlPullParser.START_TAG, ns, "kult:phone");
-        String phone = readText(parser);
-        parser.require(XmlPullParser.END_TAG, ns, "kult:phone");
-        return phone;
+    private String readDescription(XmlPullParser parser) throws IOException, XmlPullParserException {
+        parser.require(XmlPullParser.START_TAG, ns, "description");
+        String description = readText(parser);
+        parser.require(XmlPullParser.END_TAG, ns, "description");
+        return description;
     }
     private String readLink(XmlPullParser parser) throws IOException, XmlPullParserException {
-        String link = "";
         parser.require(XmlPullParser.START_TAG, ns, "link");
-        String tag = parser.getName();
-        if (tag.equals("link")) {
-            link = parser.getAttributeValue(null, "url");
-            parser.nextTag();
-        }
+        String link = readText(parser);
         parser.require(XmlPullParser.END_TAG, ns, "link");
         return link;
+    }
+    private String readStart(XmlPullParser parser) throws IOException, XmlPullParserException {
+        parser.require(XmlPullParser.START_TAG, ns, "ev:startdate");
+        String startDate = readText(parser);
+        parser.require(XmlPullParser.END_TAG, ns, "ev:startdate");
+        return startDate;
+    }
+    private String readEnd(XmlPullParser parser) throws IOException, XmlPullParserException {
+        parser.require(XmlPullParser.START_TAG, ns, "ev:enddate");
+        String endDate = readText(parser);
+        parser.require(XmlPullParser.END_TAG, ns, "ev:enddate");
+        return endDate;
+    }
+    private String readLocation(XmlPullParser parser) throws IOException, XmlPullParserException {
+        parser.require(XmlPullParser.START_TAG, ns, "ev:location");
+        String location = readText(parser);
+        parser.require(XmlPullParser.END_TAG, ns, "ev:location");
+        return location;
+    }
+    private String readOrganizer(XmlPullParser parser) throws IOException, XmlPullParserException {
+        parser.require(XmlPullParser.START_TAG, ns, "ev:organizer");
+        String organizer = readText(parser);
+        parser.require(XmlPullParser.END_TAG, ns, "ev:organizer");
+        return organizer;
     }
     private String readText(XmlPullParser parser) throws IOException, XmlPullParserException {
         String result = "";

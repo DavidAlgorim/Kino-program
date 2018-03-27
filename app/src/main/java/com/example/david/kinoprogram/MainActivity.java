@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
         });
         ListView listView = (ListView) findViewById(R.id.CinemaListView);
 
-        String[] values = new String[] { "kino1", "kino2", "kino3" };
+        String[] values = new String[] { "Kino Aero", "Kino Světozor", "Bio Oko" };
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,values);
 
         listView.setAdapter(adapter);
@@ -53,11 +53,17 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Intent myIntent = new Intent(MainActivity.this, MovieList.class);
+                if (i == 0)
+                    myIntent.putExtra("first", URL);
+                else if(i == 1)
+                    myIntent.putExtra("first", "Second");
+                else if (i == 2)
+                    myIntent.putExtra("first", "Third");
                 startActivity(myIntent);
             }
         });
 
-        new DownloadXmlTask().execute(URL);
+        //new DownloadXmlTask().execute(URL);
     }
 
     @Override
@@ -120,8 +126,8 @@ public class MainActivity extends AppCompatActivity {
         }
 
         for (XmlParser.Entry entry : entries) {
-            htmlString.append(entry.email);
-            htmlString.append(entry.phone);
+            htmlString.append(entry.title);
+            htmlString.append(entry.description);
 
         }
         return htmlString.toString();
@@ -137,8 +143,4 @@ public class MainActivity extends AppCompatActivity {
         InputStream stream = conn.getInputStream();
         return stream;
     }
-
-
-
-
 }
