@@ -1,5 +1,7 @@
 package com.example.david.kinoprogram;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.util.Xml;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -16,6 +18,7 @@ import java.util.List;
 
 public class XmlParser {
     private static final String ns = null;
+    private int order = 1;
     public List<Entry> parse(InputStream in) throws XmlPullParserException, IOException {
         try {
             XmlPullParser parser = Xml.newPullParser();
@@ -43,7 +46,8 @@ public class XmlParser {
         }
         return entries;
     }
-    public static class Entry {
+    public static class Entry implements Parcelable{
+        public final int id;
         public final String title;
         public final String description;
         public final String link;
@@ -52,8 +56,9 @@ public class XmlParser {
         public final String location;
         public final String organizer;
 
-        private Entry(String title,String description, String link,
+        private Entry(int id, String title,String description, String link,
                       String startDate, String endDate, String location, String organizer) {
+            this.id = id;
             this.title = title;
             this.description = description;
             this.link = link;
@@ -63,9 +68,32 @@ public class XmlParser {
             this.organizer = organizer;
         }
 
-        public String getTitle() {
-            return title;
+        protected Entry(Parcel in) {
+            id = in.readInt();
+            title = in.readString();
+            description = in.readString();
+            link = in.readString();
+            startDate = in.readString();
+            endDate = in.readString();
+            location = in.readString();
+            organizer = in.readString();
         }
+
+        public static final Creator<Entry> CREATOR = new Creator<Entry>() {
+            @Override
+            public Entry createFromParcel(Parcel in) {
+                return new Entry(in);
+            }
+
+            @Override
+            public Entry[] newArray(int size) {
+                return new Entry[size];
+            }
+        };
+
+        public int getId() { return id; }
+
+        public String getTitle() { return title; }
 
         public String getDescription() {
             return description;
@@ -90,9 +118,28 @@ public class XmlParser {
         public String getOrganizer() {
             return organizer;
         }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeInt(id);
+            dest.writeString(title);
+            dest.writeString(description);
+            dest.writeString(link);
+            dest.writeString(startDate);
+            dest.writeString(endDate);
+            dest.writeString(location);
+            dest.writeString(organizer);
+        }
     }
+
     private Entry readEntry(XmlPullParser parser) throws XmlPullParserException, IOException {
         parser.require(XmlPullParser.START_TAG, ns, "item");
+        int id = order;
         String title = null;
         String description = null;
         String link = null;
@@ -107,6 +154,7 @@ public class XmlParser {
             String name = parser.getName();
             if (name.equals("title")) {
                 title = readTitle(parser);
+                order++;
             } else if (name.equals("description")) {
                 description = readDescription(parser);
             } else if (name.equals("link")) {
@@ -123,7 +171,7 @@ public class XmlParser {
                 skip(parser);
             }
         }
-        return new Entry(title,description, link,
+        return new Entry(id, title,description, link,
                 startDate, endDate, location,organizer);
     }
     private String readTitle(XmlPullParser parser) throws IOException, XmlPullParserException {

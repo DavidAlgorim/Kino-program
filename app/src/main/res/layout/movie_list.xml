@@ -28,10 +28,16 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         tools:context="com.example.david.kinoprogram.MovieList"
         tools:showIn="@layout/movie_list">
-        <ListView
-            android:id="@+id/MovieListView"
+        <fragment
+            android:name="com.example.david.kinoprogram.MovieDetailFragment"
+            android:id="@+id/MovieListFragment"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"></ListView>
+            android:layout_height="match_parent"/>
+
+        <include
+            android:id="@+id/ListViewFragment"
+            layout="@layout/list"/>
+
 
     </android.support.constraint.ConstraintLayout>
 

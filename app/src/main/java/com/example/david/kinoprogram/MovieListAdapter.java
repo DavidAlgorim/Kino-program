@@ -51,7 +51,7 @@ public class MovieListAdapter extends BaseAdapter {
 
         title.setText(movie.get(i).getTitle());
         time.setText(movie.get(i).getStartDate());
-        //v.setTag(movie.get(i).);
+        v.setTag(movie.get(i).getId());
         return v;
     }
 

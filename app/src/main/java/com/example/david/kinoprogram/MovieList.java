@@ -1,10 +1,13 @@
 package com.example.david.kinoprogram;
 
+import android.support.v4.app.Fragment;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -12,16 +15,18 @@ import android.webkit.WebView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
 
-public class MovieList extends AppCompatActivity {
+public class MovieList extends AppCompatActivity implements Serializable{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,19 +47,6 @@ public class MovieList extends AppCompatActivity {
             }
         });
 
-        /*ListView listView = (ListView) findViewById(R.id.MovieListView);
-
-        String[] values = new String[] { "film1", "film2", "film3" };
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,values);
-
-        listView.setAdapter(adapter);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Intent myIntent = new Intent(MovieList.this, MovieDetail.class);
-                startActivity(myIntent);
-            }
-        });*/
 
         new DownloadXmlTask().execute(intentExtra);
     }
@@ -101,6 +93,49 @@ public class MovieList extends AppCompatActivity {
             @Override
             public void run() {
                 movieListView.setAdapter(adapter);
+            }
+        });
+        final List<XmlParser.Entry> entryy = entries;
+
+        movieListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                //Intent myIntent = new Intent(MovieList.this, MovieDetail.class);
+                //List<XmlParser.Entry> dd;
+                //startActivity(myIntent);
+                int d = entryy.get(position).getId();
+
+                //movieDetailFragment.onCreate(this);
+                //myIntent.putExtra("movie", entries);
+
+                android.app.Fragment fragment;
+                fragment = new MovieDetailFragment();
+                android.app.FragmentManager fm = getFragmentManager();
+                android.app.FragmentTransaction ft = fm.beginTransaction();
+                ft.replace(R.id.MovieListFragment, fragment);
+                ft.commit();
+                movieListView.setVisibility(View.GONE);
+
+                TextView title = (TextView) findViewById(R.id.MovieDetailTitle);
+                title.setVisibility(View.VISIBLE);
+                title.setText(entryy.get(position).getTitle());
+
+                TextView description = (TextView) findViewById(R.id.MovieDetailDescription);
+                description.setVisibility(View.VISIBLE);
+                description.setText(entryy.get(position).getDescription());
+
+                TextView start = (TextView) findViewById(R.id.MovieDetailStart);
+                start.setVisibility(View.VISIBLE);
+                start.setText(entryy.get(position).getStartDate());
+
+                TextView location = (TextView) findViewById(R.id.MovieDetailLocation);
+                location.setVisibility(View.VISIBLE);
+                location.setText(entryy.get(position).getLocation());
+
+                TextView organizer = (TextView) findViewById(R.id.MovieDetailOrganizer);
+                organizer.setVisibility(View.VISIBLE);
+                organizer.setText(entryy.get(position).getOrganizer());
+
             }
         });
 
