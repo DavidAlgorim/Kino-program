@@ -28,6 +28,7 @@ import java.util.List;
 
 public class MovieList extends AppCompatActivity implements Serializable{
 
+    private View movieFragment;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,6 +48,8 @@ public class MovieList extends AppCompatActivity implements Serializable{
             }
         });
 
+        movieFragment = (View) findViewById(R.id.MovieListFragment);
+        movieFragment.setVisibility(View.GONE);
 
         new DownloadXmlTask().execute(intentExtra);
     }
@@ -95,56 +98,22 @@ public class MovieList extends AppCompatActivity implements Serializable{
                 movieListView.setAdapter(adapter);
             }
         });
-        final List<XmlParser.Entry> entryy = entries;
 
         movieListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                //Intent myIntent = new Intent(MovieList.this, MovieDetail.class);
-                //List<XmlParser.Entry> dd;
-                //startActivity(myIntent);
-                int d = entryy.get(position).getId();
-
-                //movieDetailFragment.onCreate(this);
-                //myIntent.putExtra("movie", entries);
-
-                android.app.Fragment fragment;
-                fragment = new MovieDetailFragment();
+                XmlParser.Entry selectedEntry = (XmlParser.Entry) adapter.getItem(position);
+                android.app.Fragment fragment = MovieDetailFragment.newInstance(selectedEntry);
                 android.app.FragmentManager fm = getFragmentManager();
                 android.app.FragmentTransaction ft = fm.beginTransaction();
                 ft.replace(R.id.MovieListFragment, fragment);
                 ft.commit();
                 movieListView.setVisibility(View.GONE);
-
-                TextView title = (TextView) findViewById(R.id.MovieDetailTitle);
-                title.setVisibility(View.VISIBLE);
-                title.setText(entryy.get(position).getTitle());
-
-                TextView description = (TextView) findViewById(R.id.MovieDetailDescription);
-                description.setVisibility(View.VISIBLE);
-                description.setText(entryy.get(position).getDescription());
-
-                TextView start = (TextView) findViewById(R.id.MovieDetailStart);
-                start.setVisibility(View.VISIBLE);
-                start.setText(entryy.get(position).getStartDate());
-
-                TextView location = (TextView) findViewById(R.id.MovieDetailLocation);
-                location.setVisibility(View.VISIBLE);
-                location.setText(entryy.get(position).getLocation());
-
-                TextView organizer = (TextView) findViewById(R.id.MovieDetailOrganizer);
-                organizer.setVisibility(View.VISIBLE);
-                organizer.setText(entryy.get(position).getOrganizer());
+                movieFragment.setVisibility(View.VISIBLE);
 
             }
         });
 
-
-        for (XmlParser.Entry entry : entries) {
-            htmlString.append(entry.title);
-            htmlString.append(entry.description);
-
-        }
         return htmlString.toString();
     }
     private InputStream downloadUrl(String urlString) throws IOException {

@@ -46,7 +46,7 @@ public class XmlParser {
         }
         return entries;
     }
-    public static class Entry implements Parcelable{
+    public static class Entry {
         public final int id;
         public final String title;
         public final String description;
@@ -67,29 +67,6 @@ public class XmlParser {
             this.location = location;
             this.organizer = organizer;
         }
-
-        protected Entry(Parcel in) {
-            id = in.readInt();
-            title = in.readString();
-            description = in.readString();
-            link = in.readString();
-            startDate = in.readString();
-            endDate = in.readString();
-            location = in.readString();
-            organizer = in.readString();
-        }
-
-        public static final Creator<Entry> CREATOR = new Creator<Entry>() {
-            @Override
-            public Entry createFromParcel(Parcel in) {
-                return new Entry(in);
-            }
-
-            @Override
-            public Entry[] newArray(int size) {
-                return new Entry[size];
-            }
-        };
 
         public int getId() { return id; }
 
@@ -117,23 +94,6 @@ public class XmlParser {
 
         public String getOrganizer() {
             return organizer;
-        }
-
-        @Override
-        public int describeContents() {
-            return 0;
-        }
-
-        @Override
-        public void writeToParcel(Parcel dest, int flags) {
-            dest.writeInt(id);
-            dest.writeString(title);
-            dest.writeString(description);
-            dest.writeString(link);
-            dest.writeString(startDate);
-            dest.writeString(endDate);
-            dest.writeString(location);
-            dest.writeString(organizer);
         }
     }
 
