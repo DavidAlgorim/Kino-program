@@ -4,6 +4,8 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.text.Html;
+import android.text.Spanned;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +17,15 @@ import java.util.Date;
 
 
 public class MovieDetailFragment extends Fragment {
+
     private static XmlParser.Entry movie;
+    private String descriptionInfo;
+    private String descriptionDirector;
+    private String directorInfo;
+    private String origin;
+    private String year;
+    private String version;
+    private String duration;
 
     public static MovieDetailFragment newInstance(XmlParser.Entry entry) {
         movie = entry;
@@ -33,12 +43,15 @@ public class MovieDetailFragment extends Fragment {
         TextView title = (TextView)view.findViewById(R.id.MovieDetailTitle);
         TextView date = (TextView)view.findViewById(R.id.MovieDetailDate);
         TextView description = (TextView)view.findViewById(R.id.MovieDetailDescription);
+        TextView director = (TextView)view.findViewById(R.id.MovieDetailDirector);
 
         if (movie != null)
         {
             title.setText(splitTitle(movie.getTitle()));
             date.setText(splitDate(movie.getStartDate()));
-            description.setText(movie.getDescription());
+            splitDescription(movie.getDescription());
+            description.setText(descriptionInfo);
+            director.setText(directorInfo);
         }
 
         return view;
@@ -72,5 +85,30 @@ public class MovieDetailFragment extends Fragment {
         }catch (Exception e){}
 
         return null;
+    }
+
+    private void splitDescription(String description){
+        Spanned htmlAsSpanned = Html.fromHtml(description);
+        String formatedString = htmlAsSpanned.toString();
+        String[] splitDescriptionArray = formatedString.split("\n\\(");
+        splitInfo(splitDescriptionArray[0]);
+        directorInfo = splitDescriptionArray[1];
+        //splitDirector(splitDescriptionArray[1]);
+    }
+
+    private void splitInfo(String info){
+        String[] splitInfoArray = info.split("\n\nPopis: ");
+        descriptionInfo = splitInfoArray[1];
+    }
+
+    private void splitDirector(String director){
+        String[] splitDescriptionDirectorArray = director.split("\\) ");
+        String [] splitArray = splitDescriptionDirectorArray[1].split(", ");
+        director = splitArray[0];
+        origin = splitArray[1];
+        year = splitArray[2];
+        version = splitArray[3];
+        String [] splitDuration = splitArray[4].split("\n\n");
+        duration = splitDuration[0];
     }
 }
