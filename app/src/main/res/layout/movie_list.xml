@@ -28,25 +28,40 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         tools:context="com.example.david.kinoprogram.MovieList"
         tools:showIn="@layout/movie_list">
-        <fragment
-            android:name="com.example.david.kinoprogram.MovieDetailFragment"
-            android:id="@+id/MovieListFragment"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent">
+            <fragment
+                android:name="com.example.david.kinoprogram.MovieDetailFragment"
+                android:id="@+id/MovieListFragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+            <LinearLayout
+                android:id="@+id/MovieListProgressBar"
+                android:layout_width="match_parent"
+                android:layout_height="350px"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true">
+                <ProgressBar
+                    android:layout_width="250px"
+                    android:layout_height="250px"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/downloading_data"
+                    android:textAlignment="center"
+                    style="@style/TextInfo"/>
+            </LinearLayout>
 
-        <include
-            android:id="@+id/ListViewFragment"
-            layout="@layout/list"/>
+            <include
+                android:id="@+id/ListViewFragment"
+                layout="@layout/list"/>
+        </RelativeLayout>
+
 
 
     </android.support.constraint.ConstraintLayout>
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
-        app:srcCompat="@android:drawable/ic_dialog_email" />
 
 </android.support.design.widget.CoordinatorLayout>

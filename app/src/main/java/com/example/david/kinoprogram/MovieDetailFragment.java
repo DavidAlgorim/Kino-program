@@ -57,8 +57,7 @@ public class MovieDetailFragment extends Fragment {
         return view;
     }
 
-    private String splitTitle(String title){
-
+    public String splitTitle(String title){
         title.split("Film:");
         String[] deleteFilm = title.split("Film: ");
         title = deleteFilm[1];
@@ -68,7 +67,7 @@ public class MovieDetailFragment extends Fragment {
         return title;
     }
 
-    private String splitDate(String textDate){
+    public String splitDate(String textDate){
         Date date = new Date();
         String[] deleteZone = textDate.split("\\+");
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
@@ -78,7 +77,7 @@ public class MovieDetailFragment extends Fragment {
             e.printStackTrace();
         }
 
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm");
         try {
             String dateTime = dateFormat.format(date);
             return dateTime;
@@ -110,5 +109,18 @@ public class MovieDetailFragment extends Fragment {
         version = splitArray[3];
         String [] splitDuration = splitArray[4].split("\n\n");
         duration = splitDuration[0];
+
+    }
+
+    public String getDuration(String duration){
+        String[] splitDescriptionArray = duration.split("\n\\(");
+        String[] directorArray = splitDescriptionArray[1].split(", ");
+        String[] durationArray = directorArray[directorArray.length-1].split("\n\n");
+        String[] splitDurationArray = durationArray[0].split(":00 min");
+        String[] hoursMinutesArray = splitDurationArray[0].split(":");
+        int hours = Integer.parseInt(hoursMinutesArray[0]);
+        int minutes = Integer.parseInt(hoursMinutesArray[1]) + hours*60;
+        duration = String.valueOf(minutes);
+        return duration;
     }
 }

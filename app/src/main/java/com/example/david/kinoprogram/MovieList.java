@@ -15,6 +15,7 @@ import android.webkit.WebView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import org.xmlpull.v1.XmlPullParserException;
@@ -29,6 +30,7 @@ import java.util.List;
 public class MovieList extends AppCompatActivity implements Serializable{
 
     private View movieFragment;
+    private View progressBar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,17 +41,9 @@ public class MovieList extends AppCompatActivity implements Serializable{
         Intent intent = getIntent();
         String intentExtra = intent.getStringExtra("first");
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-
         movieFragment = (View) findViewById(R.id.MovieListFragment);
         movieFragment.setVisibility(View.GONE);
+        progressBar = (View) findViewById(R.id.MovieListProgressBar);
 
         new DownloadXmlTask().execute(intentExtra);
     }
@@ -111,6 +105,12 @@ public class MovieList extends AppCompatActivity implements Serializable{
                 movieListView.setVisibility(View.GONE);
                 movieFragment.setVisibility(View.VISIBLE);
 
+            }
+        });
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                progressBar.setVisibility(View.GONE);
             }
         });
 
