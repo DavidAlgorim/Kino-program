@@ -14,14 +14,15 @@ import android.widget.TextView;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 public class MovieDetailFragment extends Fragment {
 
     private static XmlParser.Entry movie;
     private String descriptionInfo;
-    private String descriptionDirector;
-    private String directorInfo;
+    private String directors;
     private String origin;
     private String year;
     private String version;
@@ -51,7 +52,7 @@ public class MovieDetailFragment extends Fragment {
             date.setText(splitDate(movie.getStartDate()));
             splitDescription(movie.getDescription());
             description.setText(descriptionInfo);
-            director.setText(directorInfo);
+            director.setText(directors);
         }
 
         return view;
@@ -89,10 +90,10 @@ public class MovieDetailFragment extends Fragment {
     private void splitDescription(String description){
         Spanned htmlAsSpanned = Html.fromHtml(description);
         String formatedString = htmlAsSpanned.toString();
+        duration = getDuration(formatedString);
         String[] splitDescriptionArray = formatedString.split("\n\\(");
         splitInfo(splitDescriptionArray[0]);
-        directorInfo = splitDescriptionArray[1];
-        //splitDirector(splitDescriptionArray[1]);
+        splitDirector(splitDescriptionArray[1]);
     }
 
     private void splitInfo(String info){
@@ -102,14 +103,37 @@ public class MovieDetailFragment extends Fragment {
 
     private void splitDirector(String director){
         String[] splitDescriptionDirectorArray = director.split("\\) ");
-        String [] splitArray = splitDescriptionDirectorArray[1].split(", ");
-        director = splitArray[0];
-        origin = splitArray[1];
-        year = splitArray[2];
-        version = splitArray[3];
-        String [] splitDuration = splitArray[4].split("\n\n");
-        duration = splitDuration[0];
 
+        String regexYear = "(\\d{4})";
+        String regexCountry = " ([A-Z \\W]){1,}[,]";
+        String regexLanguage = ", \\d{1,2}:\\d{1,2}:\\d{1,2} min";
+
+        //find year
+        Pattern pattern = Pattern.compile(regexYear);
+        Matcher matcher = pattern.matcher(splitDescriptionDirectorArray[1]);
+        if (matcher.find()) {
+            year = matcher.group(1);  // 4 digit number
+        }
+
+        String [] splitArray = splitDescriptionDirectorArray[1].split(regexYear);
+
+        //find directors
+        String [] splitDirectorCountryArray = splitArray[0].split("Režie: ");
+        String [] splitDirectorArray = splitDirectorCountryArray[1].split(regexCountry);
+        directors = splitDirectorArray[0].substring(0, splitDirectorArray[0].length()-1);
+
+        //find country
+        pattern = Pattern.compile(regexCountry);
+        matcher = pattern.matcher(splitDirectorCountryArray[1]);
+        if (matcher.find()) {
+            origin = matcher.group();
+        }
+        String [] removeOriginCommaArray = origin.split(",");
+        origin = removeOriginCommaArray[0];
+
+        //find language
+        String [] splitLanguageTimeArray = splitArray[1].split(regexLanguage);
+        version = splitLanguageTimeArray[0].substring(2, splitLanguageTimeArray[0].length());
     }
 
     public String getDuration(String duration){
