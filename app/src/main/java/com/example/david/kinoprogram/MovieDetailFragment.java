@@ -22,11 +22,11 @@ public class MovieDetailFragment extends Fragment {
 
     private static XmlParser.Entry movie;
     private String descriptionInfo;
-    private String directors;
-    private String origin;
-    private String year;
-    private String version;
-    private String duration;
+    private String directorString;
+    private String originString;
+    private String yearString;
+    private String languageString;
+    private String durationString;
 
     public static MovieDetailFragment newInstance(XmlParser.Entry entry) {
         movie = entry;
@@ -43,16 +43,25 @@ public class MovieDetailFragment extends Fragment {
         View view = inflater.inflate(R.layout.movie_detail, container, false);
         TextView title = (TextView)view.findViewById(R.id.MovieDetailTitle);
         TextView date = (TextView)view.findViewById(R.id.MovieDetailDate);
-        TextView description = (TextView)view.findViewById(R.id.MovieDetailDescription);
         TextView director = (TextView)view.findViewById(R.id.MovieDetailDirector);
+        TextView origin = (TextView)view.findViewById(R.id.MovieDetailOrigin);
+        TextView year = (TextView)view.findViewById(R.id.MovieDetailYear);
+        TextView language = (TextView)view.findViewById(R.id.MovieDetailLanguage);
+        TextView duration = (TextView)view.findViewById(R.id.MovieDetailDuration);
+        TextView description = (TextView)view.findViewById(R.id.MovieDetailDescription);
+
 
         if (movie != null)
         {
+            splitDescription(movie.getDescription());
             title.setText(splitTitle(movie.getTitle()));
             date.setText(splitDate(movie.getStartDate()));
-            splitDescription(movie.getDescription());
             description.setText(descriptionInfo);
-            director.setText(directors);
+            director.setText(directorString);
+            origin.setText(originString);
+            year.setText(yearString);
+            language.setText(languageString);
+            duration.setText(durationString + " minut");
         }
 
         return view;
@@ -90,7 +99,7 @@ public class MovieDetailFragment extends Fragment {
     private void splitDescription(String description){
         Spanned htmlAsSpanned = Html.fromHtml(description);
         String formatedString = htmlAsSpanned.toString();
-        duration = getDuration(formatedString);
+        durationString = getDuration(formatedString);
         String[] splitDescriptionArray = formatedString.split("\n\\(");
         splitInfo(splitDescriptionArray[0]);
         splitDirector(splitDescriptionArray[1]);
@@ -112,7 +121,7 @@ public class MovieDetailFragment extends Fragment {
         Pattern pattern = Pattern.compile(regexYear);
         Matcher matcher = pattern.matcher(splitDescriptionDirectorArray[1]);
         if (matcher.find()) {
-            year = matcher.group(1);  // 4 digit number
+            yearString = matcher.group(1);  // 4 digit number
         }
 
         String [] splitArray = splitDescriptionDirectorArray[1].split(regexYear);
@@ -120,20 +129,20 @@ public class MovieDetailFragment extends Fragment {
         //find directors
         String [] splitDirectorCountryArray = splitArray[0].split("Režie: ");
         String [] splitDirectorArray = splitDirectorCountryArray[1].split(regexCountry);
-        directors = splitDirectorArray[0].substring(0, splitDirectorArray[0].length()-1);
+        directorString = splitDirectorArray[0].substring(0, splitDirectorArray[0].length()-1);
 
         //find country
         pattern = Pattern.compile(regexCountry);
         matcher = pattern.matcher(splitDirectorCountryArray[1]);
         if (matcher.find()) {
-            origin = matcher.group();
+            originString = matcher.group();
+            String [] removeOriginCommaArray = originString.split(",");
+            originString = removeOriginCommaArray[0].substring(1, removeOriginCommaArray[0].length());
         }
-        String [] removeOriginCommaArray = origin.split(",");
-        origin = removeOriginCommaArray[0];
 
         //find language
         String [] splitLanguageTimeArray = splitArray[1].split(regexLanguage);
-        version = splitLanguageTimeArray[0].substring(2, splitLanguageTimeArray[0].length());
+        languageString = splitLanguageTimeArray[0].substring(2, splitLanguageTimeArray[0].length());
     }
 
     public String getDuration(String duration){
