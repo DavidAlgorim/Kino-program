@@ -1,6 +1,7 @@
 package com.example.david.kinoprogram;
 
 import android.content.Context;
+import android.content.pm.ActivityInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
@@ -9,6 +10,7 @@ import android.text.Spanned;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.text.ParseException;
@@ -27,6 +29,7 @@ public class MovieDetailFragment extends Fragment {
     private String yearString;
     private String languageString;
     private String durationString;
+    private View progressView;
 
     public static MovieDetailFragment newInstance(XmlParser.Entry entry) {
         movie = entry;
@@ -50,6 +53,14 @@ public class MovieDetailFragment extends Fragment {
         TextView duration = (TextView)view.findViewById(R.id.MovieDetailDuration);
         TextView description = (TextView)view.findViewById(R.id.MovieDetailDescription);
 
+        TextView directorText = (TextView)view.findViewById(R.id.MovieDetailDirectorString);
+        TextView originText = (TextView)view.findViewById(R.id.MovieDetailOriginString);
+        TextView yearText = (TextView)view.findViewById(R.id.MovieDetailYearString);
+        TextView languageText = (TextView)view.findViewById(R.id.MovieDetailLanguageString);
+        TextView durationText = (TextView)view.findViewById(R.id.MovieDetailDurationString);
+
+        progressView = (LinearLayout)view.findViewById(R.id.MovieDetailProgressBar);
+
 
         if (movie != null)
         {
@@ -62,6 +73,13 @@ public class MovieDetailFragment extends Fragment {
             year.setText(yearString);
             language.setText(languageString);
             duration.setText(durationString + " minut");
+
+            directorText.setText(R.string.director);
+            originText.setText(R.string.country);
+            yearText.setText(R.string.year);
+            languageText.setText(R.string.language);
+            durationText.setText(R.string.duration);
+            progressView.setVisibility(View.GONE);
         }
 
         return view;

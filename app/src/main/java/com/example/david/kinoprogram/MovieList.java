@@ -31,6 +31,9 @@ public class MovieList extends AppCompatActivity implements Serializable{
 
     private View movieFragment;
     private View progressBar;
+    private ListView movieListView;
+    private android.app.FragmentManager fragmentManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,13 +42,16 @@ public class MovieList extends AppCompatActivity implements Serializable{
         setSupportActionBar(toolbar);
 
         Intent intent = getIntent();
-        String intentExtra = intent.getStringExtra("first");
+        String intentExtraURL = intent.getStringExtra("first");
+        String intentExtraName = intent.getStringExtra("second");
+        getSupportActionBar().setTitle(intentExtraName);
+
 
         movieFragment = (View) findViewById(R.id.MovieListFragment);
         movieFragment.setVisibility(View.GONE);
         progressBar = (View) findViewById(R.id.MovieListProgressBar);
 
-        new DownloadXmlTask().execute(intentExtra);
+        new DownloadXmlTask().execute(intentExtraURL);
     }
 
 
@@ -84,7 +90,7 @@ public class MovieList extends AppCompatActivity implements Serializable{
             }
         }
 
-        final ListView movieListView = (ListView) findViewById(R.id.MovieListView);
+        movieListView = (ListView) findViewById(R.id.MovieListView);
         final MovieListAdapter adapter = new MovieListAdapter(getApplicationContext(), entries);
         runOnUiThread(new Runnable() {
             @Override
@@ -97,14 +103,14 @@ public class MovieList extends AppCompatActivity implements Serializable{
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 XmlParser.Entry selectedEntry = (XmlParser.Entry) adapter.getItem(position);
-                android.app.Fragment fragment = MovieDetailFragment.newInstance(selectedEntry);
-                android.app.FragmentManager fm = getFragmentManager();
-                android.app.FragmentTransaction ft = fm.beginTransaction();
-                ft.replace(R.id.MovieListFragment, fragment);
+                android.app.Fragment fragment = new android.app.Fragment();
+                fragment = MovieDetailFragment.newInstance(selectedEntry);
+                fragmentManager = getFragmentManager();
+                android.app.FragmentTransaction ft = fragmentManager.beginTransaction();
+                ft.replace(R.id.MovieListFragment, fragment).addToBackStack("movie_detail");
                 ft.commit();
                 movieListView.setVisibility(View.GONE);
                 movieFragment.setVisibility(View.VISIBLE);
-
             }
         });
         runOnUiThread(new Runnable() {
@@ -128,4 +134,14 @@ public class MovieList extends AppCompatActivity implements Serializable{
         return stream;
     }
 
+    @Override
+    public void onBackPressed(){
+        if (fragmentManager.getBackStackEntryCount() > 0){
+            movieFragment.setVisibility(View.GONE);
+            movieListView.setVisibility(View.VISIBLE);
+            fragmentManager.popBackStackImmediate();
+        }
+        else super.onBackPressed();
+
+    }
 }

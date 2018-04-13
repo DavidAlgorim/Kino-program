@@ -25,8 +25,12 @@ import java.util.List;
 import java.net.URL;
 
 public class MainActivity extends AppCompatActivity {
-    private static final String URL =
+    private static final String aeroURL =
             "https://www.kinoaero.cz/export/?";
+    private static final String svetozorURL =
+            "https://www.kinosvetozor.cz/export/?";
+    private static final String okoURL =
+            "https://www.biooko.net/export/?";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,12 +49,18 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Intent myIntent = new Intent(MainActivity.this, MovieList.class);
-                if (i == 0)
-                    myIntent.putExtra("first", URL);
-                else if(i == 1)
-                    myIntent.putExtra("first", "Second");
-                else if (i == 2)
-                    myIntent.putExtra("first", "Third");
+                if (i == 0){
+                    myIntent.putExtra("first", aeroURL);
+                    myIntent.putExtra("second", "Kino Aero");
+                }
+                else if(i == 1){
+                    myIntent.putExtra("first", svetozorURL);
+                    myIntent.putExtra("second", "Kino Světozor");
+                }
+                else if (i == 2){
+                    myIntent.putExtra("first", okoURL);
+                    myIntent.putExtra("second", "Bio Oko");
+                }
                 startActivity(myIntent);
             }
         });

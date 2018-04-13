@@ -9,4 +9,10 @@
     <string name="xml_error">Error parsing XML.</string>
 
     <string name="downloading_data">Stahování dat</string>
+
+    <string name="director">Režie:</string>
+    <string name="country">Země:</string>
+    <string name="year">Rok:</string>
+    <string name="language">Jazyk:</string>
+    <string name="duration">Trvání:</string>
 </resources>
