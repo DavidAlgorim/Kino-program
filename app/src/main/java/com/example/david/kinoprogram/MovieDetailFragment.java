@@ -64,6 +64,7 @@ public class MovieDetailFragment extends Fragment {
 
         if (movie != null)
         {
+            if (movie.getDescription().length() > 0)
             splitDescription(movie.getDescription());
             title.setText(splitTitle(movie.getTitle()));
             date.setText(splitDate(movie.getStartDate()));
@@ -72,7 +73,7 @@ public class MovieDetailFragment extends Fragment {
             origin.setText(originString);
             year.setText(yearString);
             language.setText(languageString);
-            duration.setText(durationString + " minut");
+            duration.setText(durationString);
 
             directorText.setText(R.string.director);
             originText.setText(R.string.country);
@@ -129,49 +130,68 @@ public class MovieDetailFragment extends Fragment {
     }
 
     private void splitDirector(String director){
-        String[] splitDescriptionDirectorArray = director.split("\\) ");
+        try {
+            String[] splitDescriptionDirectorArray = director.split("\\) ");
 
-        String regexYear = "(\\d{4})";
-        String regexCountry = " ([A-Z \\W]){1,}[,]";
-        String regexLanguage = ", \\d{1,2}:\\d{1,2}:\\d{1,2} min";
+            String regexYear = "(\\d{4})";
+            String regexCountry = " ([A-Z \\W]){1,}[,]";
+            String regexLanguage = ", \\d{1,2}:\\d{1,2}:\\d{1,2} min";
 
-        //find year
-        Pattern pattern = Pattern.compile(regexYear);
-        Matcher matcher = pattern.matcher(splitDescriptionDirectorArray[1]);
-        if (matcher.find()) {
-            yearString = matcher.group(1);  // 4 digit number
+            //find year
+            Pattern pattern = Pattern.compile(regexYear);
+            Matcher matcher = pattern.matcher(splitDescriptionDirectorArray[1]);
+            if (matcher.find()) {
+                yearString = matcher.group(1);  // 4 digit number
+            }
+
+            String [] splitArray = splitDescriptionDirectorArray[1].split(regexYear);
+
+
+            //find directors
+            String [] splitDirectorCountryArray = splitArray[0].split("Režie: ");
+            String [] splitDirectorArray = splitDirectorCountryArray[1].split(regexCountry);
+            directorString = splitDirectorArray[0].substring(0, splitDirectorArray[0].length()-1);
+
+            //find country
+            pattern = Pattern.compile(regexCountry);
+            matcher = pattern.matcher(splitDirectorCountryArray[1]);
+            if (matcher.find()) {
+                originString = matcher.group();
+                String [] removeOriginCommaArray = originString.split(",");
+                originString = removeOriginCommaArray[0].substring(1, removeOriginCommaArray[0].length());
+            }
+
+            //find language
+            String [] splitLanguageTimeArray = splitArray[1].split(regexLanguage);
+            languageString = splitLanguageTimeArray[0].substring(2, splitLanguageTimeArray[0].length());
+        }catch (Exception e){
+            noData();
         }
 
-        String [] splitArray = splitDescriptionDirectorArray[1].split(regexYear);
-
-        //find directors
-        String [] splitDirectorCountryArray = splitArray[0].split("Režie: ");
-        String [] splitDirectorArray = splitDirectorCountryArray[1].split(regexCountry);
-        directorString = splitDirectorArray[0].substring(0, splitDirectorArray[0].length()-1);
-
-        //find country
-        pattern = Pattern.compile(regexCountry);
-        matcher = pattern.matcher(splitDirectorCountryArray[1]);
-        if (matcher.find()) {
-            originString = matcher.group();
-            String [] removeOriginCommaArray = originString.split(",");
-            originString = removeOriginCommaArray[0].substring(1, removeOriginCommaArray[0].length());
-        }
-
-        //find language
-        String [] splitLanguageTimeArray = splitArray[1].split(regexLanguage);
-        languageString = splitLanguageTimeArray[0].substring(2, splitLanguageTimeArray[0].length());
     }
 
     public String getDuration(String duration){
-        String[] splitDescriptionArray = duration.split("\n\\(");
-        String[] directorArray = splitDescriptionArray[1].split(", ");
-        String[] durationArray = directorArray[directorArray.length-1].split("\n\n");
-        String[] splitDurationArray = durationArray[0].split(":00 min");
-        String[] hoursMinutesArray = splitDurationArray[0].split(":");
-        int hours = Integer.parseInt(hoursMinutesArray[0]);
-        int minutes = Integer.parseInt(hoursMinutesArray[1]) + hours*60;
-        duration = String.valueOf(minutes);
-        return duration;
+        if (duration.length() > 0){
+            int ss = duration.length();
+            String[] splitDescriptionArray = duration.split("\n\\(");
+            String[] directorArray = splitDescriptionArray[1].split(", ");
+            String[] durationArray = directorArray[directorArray.length-1].split("\n\n");
+            String[] splitDurationArray = durationArray[0].split(":00 min");
+            String[] hoursMinutesArray = splitDurationArray[0].split(":");
+            int hours = Integer.parseInt(hoursMinutesArray[0]);
+            int minutes = Integer.parseInt(hoursMinutesArray[1]) + hours*60;
+            duration = String.valueOf(minutes);
+            return duration + " minut";
+        }
+        else
+            return duration;
+    }
+
+    private void noData(){
+        directorString = "Žádná data";
+        originString = "Žádná data";
+        yearString = "Žádná data";
+        languageString = "Žádná data";
+        durationString = "Žádná data";
     }
 }

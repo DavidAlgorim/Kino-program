@@ -79,7 +79,6 @@ public class MovieList extends AppCompatActivity implements Serializable{
         InputStream stream = null;
         XmlParser feedXmlParser = new XmlParser();
         List<XmlParser.Entry> entries = null;
-        String url = null;
         StringBuilder htmlString = new StringBuilder();
         try {
             stream = downloadUrl(urlString);
