@@ -141,7 +141,7 @@ public class MovieDetailFragment extends Fragment {
             Pattern pattern = Pattern.compile(regexYear);
             Matcher matcher = pattern.matcher(splitDescriptionDirectorArray[1]);
             if (matcher.find()) {
-                yearString = matcher.group(1);  // 4 digit number
+                yearString = matcher.group(1);
             }
 
             String [] splitArray = splitDescriptionDirectorArray[1].split(regexYear);
@@ -172,7 +172,6 @@ public class MovieDetailFragment extends Fragment {
 
     public String getDuration(String duration){
         if (duration.length() > 0){
-            int ss = duration.length();
             String[] splitDescriptionArray = duration.split("\n\\(");
             String[] directorArray = splitDescriptionArray[1].split(", ");
             String[] durationArray = directorArray[directorArray.length-1].split("\n\n");
