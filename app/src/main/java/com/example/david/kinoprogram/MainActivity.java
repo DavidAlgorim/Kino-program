@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(myIntent);
             }
         });
-
+        startService(new Intent(this, NotificationService.class));
         //new DownloadXmlTask().execute(URL);
     }
 
@@ -88,61 +88,5 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-
-
-    private class DownloadXmlTask extends AsyncTask<String, Void, String> {
-
-        @Override
-        protected String doInBackground(String... urls) {
-            try {
-                return loadXmlFromNetwork(urls[0]);
-            } catch (IOException e) {
-                return getResources().getString(R.string.connection_error);
-            } catch (XmlPullParserException e) {
-                return getResources().getString(R.string.xml_error);
-            }
-        }
-        @Override
-        protected void onPostExecute(String result) {
-            setContentView(R.layout.cinema_list);
-            WebView myWebView = (WebView) findViewById(R.id.webview);
-            myWebView.loadData(result, "text/html", null);
-        }
-    }
-
-    private String loadXmlFromNetwork(String urlString) throws XmlPullParserException, IOException {
-        InputStream stream = null;
-        XmlParser feedXmlParser = new XmlParser();
-        List<XmlParser.Entry> entries = null;
-        String url = null;
-        StringBuilder htmlString = new StringBuilder();
-        try {
-            stream = downloadUrl(urlString);
-            entries = feedXmlParser.parse(stream);
-        } finally {
-            if (stream != null) {
-                stream.close();
-            }
-        }
-
-        for (XmlParser.Entry entry : entries) {
-            htmlString.append(entry.title);
-            htmlString.append(entry.description);
-
-        }
-        return htmlString.toString();
-    }
-    private InputStream downloadUrl(String urlString) throws IOException {
-        URL url = new URL(urlString);
-        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        conn.setReadTimeout(10000 /* milliseconds */);
-        conn.setConnectTimeout(15000 /* milliseconds */);
-        conn.setRequestMethod("GET");
-        conn.setDoInput(true);
-        conn.connect();
-        InputStream stream = conn.getInputStream();
-        return stream;
     }
 }

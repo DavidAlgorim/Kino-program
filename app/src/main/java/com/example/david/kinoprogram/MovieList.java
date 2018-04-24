@@ -86,7 +86,7 @@ public class MovieList extends AppCompatActivity implements Serializable {
     private FusedLocationProviderClient mFusedLocationProviderClient;
     double cinemaLatitude = 0;
     double cinemaLongitude = 0;
-    float[] distanceResults = new float[1];
+    public float[] distanceResults = new float[1];
     private Location currentLocation;
 
     @Override
@@ -102,8 +102,6 @@ public class MovieList extends AppCompatActivity implements Serializable {
         getSupportActionBar().setTitle(intentExtraName);
 
         context = this;
-        notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        remoteViews = new RemoteViews(getPackageName(), R.layout.notification);
 
         movieFragment = (View) findViewById(R.id.MovieListFragment);
         movieFragment.setVisibility(View.GONE);
@@ -138,7 +136,6 @@ public class MovieList extends AppCompatActivity implements Serializable {
     private String loadXmlFromNetwork(String urlString) throws XmlPullParserException, IOException {
         InputStream stream = null;
         XmlParser feedXmlParser = new XmlParser();
-        //entries = null;
         StringBuilder htmlString = new StringBuilder();
         try {
             stream = downloadUrl(urlString);
@@ -149,11 +146,11 @@ public class MovieList extends AppCompatActivity implements Serializable {
             }
         }
 
-        if (distanceResults[0] <= 1500){
+        /*if (distanceResults[0] <= 1500){
             for (XmlParser.Entry entry : movieEntries) {
                 createNotification(entry);
             }
-        }
+        }*/
 
 
         movieListView = (ListView) findViewById(R.id.MovieListView);
@@ -213,84 +210,9 @@ public class MovieList extends AppCompatActivity implements Serializable {
 
     }
 
-    private void createNotification(XmlParser.Entry entry) {
-        String movieDate = splitDate(entry.getStartDate());
-        Date date = new Date();
-        String todayString;
-
-        Calendar calendar = Calendar.getInstance();
-        SimpleDateFormat formatDateOut = new SimpleDateFormat("dd.MM.");
-        SimpleDateFormat formatTimeOut = new SimpleDateFormat("HH:mm");
-
-        Date today = calendar.getTime();
-
-        SimpleDateFormat formatIn = new SimpleDateFormat("dd.MM.yyyy HH:mm");
-        try {
-            date = formatIn.parse(movieDate);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            movieDate = formatDateOut.format(date);
-        } catch (Exception e) {
-        }
-
-        try {
-            todayString = formatDateOut.format(today);
-            if (movieDate.equals(todayString)) {
-                //create notification
-                String[] title = entry.getTitle().split(" \\(");
-                remoteViews.setTextViewText(R.id.NotificationTitle, title[0]);
-                remoteViews.setTextViewText(R.id.NotificationTime, formatTimeOut.format(date));
-                notification_id = (int) System.currentTimeMillis();
-                Intent button_intent = new Intent("notification_button_clicked");
-                button_intent.putExtra("id", notification_id);
-                PendingIntent p_button_indent = PendingIntent.getBroadcast(context, 123, button_intent, 0);
-                remoteViews.setOnClickPendingIntent(R.id.NotificationButton, p_button_indent);
-
-                Intent notification_intent = new Intent(context, MovieList.class);
-                notification_intent.putExtra("first", intentExtraURL);
-                notification_intent.putExtra("second", intentExtraName);
-                PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, notification_intent, 0);
-                notificationBuilder = new NotificationCompat.Builder(context);
-                notificationBuilder.setSmallIcon(R.mipmap.ic_launcher)
-                        .setAutoCancel(true)
-                        .setCustomContentView(remoteViews)
-                        .setContentIntent(pendingIntent);
-                Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-                notificationBuilder.setSound(alarmSound);
-                notificationBuilder.setVibrate(new long[]{500, 500});
-                notificationManager.notify(notification_id, notificationBuilder.build());
-            }
-        } catch (Exception e) {
-        }
-    }
-
-    public String splitDate(String textDate) {
-        Date date = new Date();
-        String[] deleteZone = textDate.split("\\+");
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-        try {
-            date = format.parse(deleteZone[0]);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm");
-        try {
-            String dateTime = dateFormat.format(date);
-            return dateTime;
-        } catch (Exception e) {
-        }
-
-        return null;
-    }
-
     private void initilizeMap() {
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
-
 
         mapFragment.getMapAsync(new OnMapReadyCallback() {
             @Override
@@ -324,7 +246,7 @@ public class MovieList extends AppCompatActivity implements Serializable {
         });
     }
 
-    private void getLocationPermission(){
+    public void getLocationPermission(){
         String[] permissions = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
         if (ContextCompat.checkSelfPermission(this.getApplicationContext(), FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
             if (ContextCompat.checkSelfPermission(this.getApplicationContext(), COURSE_LOCATION) == PackageManager.PERMISSION_GRANTED){
