@@ -52,7 +52,7 @@ public class NotificationService extends Service{
     Timer timer;
     TimerTask timerTask;
     String TAG = "Timers";
-    int Your_X_SECS = 20;
+    int seconds = 3600;
     private MovieList movieList = new MovieList();
 
     private NotificationCompat.Builder notificationBuilder;
@@ -110,7 +110,7 @@ public class NotificationService extends Service{
         initializeTimerTask();
 
         //schedule the timer, after the first 5000ms the TimerTask will run every 10000ms
-        timer.schedule(timerTask, 5000, Your_X_SECS*1000); //
+        timer.schedule(timerTask, 5000, seconds*1000); //
         //timer.schedule(timerTask, 5000,1000); //
     }
 
@@ -130,14 +130,14 @@ public class NotificationService extends Service{
                 //use a handler to run a toast that shows the current timestamp
                 handler.post(new Runnable() {
                     public void run() {
-                        YOURNOTIFICATIONFUNCTION();
+                        callNotification();
                     }
                 });
             }
         };
     }
 
-    private void YOURNOTIFICATIONFUNCTION(){
+    private void callNotification(){
         getDeviceLocation();
         new DownloadXmlTask().execute("https://www.biooko.net/export/?");
         new DownloadXmlTask().execute("https://www.kinosvetozor.cz/export/?");

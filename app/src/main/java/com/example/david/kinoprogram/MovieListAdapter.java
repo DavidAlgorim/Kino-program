@@ -76,7 +76,7 @@ public class MovieListAdapter extends BaseAdapter {
         date.setText(dateString);
         day.setText(dayOfWeekString);
         slash.setText(slashString);
-        duration.setText("Délka: " + movieDetailFragment.getDuration(formatedString));
+        duration.setText(movieDetailFragment.getDuration(formatedString));
         v.setTag(movie.get(i).getId());
         return v;
     }

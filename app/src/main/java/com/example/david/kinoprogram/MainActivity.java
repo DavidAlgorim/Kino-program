@@ -65,7 +65,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         startService(new Intent(this, NotificationService.class));
-        //new DownloadXmlTask().execute(URL);
     }
 
     @Override
