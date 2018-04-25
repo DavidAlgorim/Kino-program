@@ -110,18 +110,18 @@ public class MovieListAdapter extends BaseAdapter {
             todayString = formatDateOut.format(today);
             tomorrowString = formatDateOut.format(tomorrow);
             timeString = formatTimeOut.format(date);
-            dayOfWeekString = dayOfWeek.format(date);
+            dayOfWeekString = dayOfWeek.format(date) + " ";
             dateString = movieDate;
-            slashString = " / ";
+            slashString = " v ";
             if (movieDate.equals(todayString))
             {
-                dayOfWeekString = "Dnes";
+                dayOfWeekString = "Dnes v ";
                 dateString = "";
                 slashString = "";
             }
             else if(dateString.equals(tomorrowString))
             {
-                dayOfWeekString = "Zítra";
+                dayOfWeekString = "Zítra v ";
                 dateString = "";
                 slashString = "";
             }

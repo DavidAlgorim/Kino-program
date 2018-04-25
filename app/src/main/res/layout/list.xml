@@ -12,6 +12,8 @@
         <ListView
             android:id="@+id/MovieListView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"></ListView>
+            android:layout_height="wrap_content"
+            android:divider="@drawable/list_divider"
+            android:dividerHeight="2px"/>
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>
