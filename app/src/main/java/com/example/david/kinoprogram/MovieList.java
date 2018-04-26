@@ -168,7 +168,7 @@ public class MovieList extends AppCompatActivity implements Serializable {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 XmlParser.Entry selectedEntry = (XmlParser.Entry) adapter.getItem(position);
                 android.app.Fragment fragment = new android.app.Fragment();
-                fragment = MovieDetailFragment.newInstance(selectedEntry);
+                fragment = MovieDetailFragment.newInstance(selectedEntry, intentExtraName);
                 fragmentManager = getFragmentManager();
                 android.app.FragmentTransaction ft = fragmentManager.beginTransaction();
                 ft.replace(R.id.MovieListFragment, fragment).addToBackStack("movie_detail");
@@ -289,7 +289,7 @@ public class MovieList extends AppCompatActivity implements Serializable {
                     public void onComplete(@NonNull Task task) {
                         if (task.isSuccessful()){
                             currentLocation = (Location) task.getResult();
-                            moveCamera(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()), DEFAULT_ZOOM);
+                            moveCamera(new LatLng(cinemaLatitude, cinemaLongitude), DEFAULT_ZOOM);
                             Location.distanceBetween(currentLocation.getLatitude(), currentLocation.getLongitude(),
                                     cinemaLatitude, cinemaLongitude, distanceResults);
 

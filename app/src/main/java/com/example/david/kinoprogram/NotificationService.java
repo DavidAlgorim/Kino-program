@@ -52,7 +52,7 @@ public class NotificationService extends Service{
     Timer timer;
     TimerTask timerTask;
     String TAG = "Timers";
-    int seconds = 3600;
+    int seconds = 30;
     private MovieList movieList = new MovieList();
 
     private NotificationCompat.Builder notificationBuilder;
@@ -190,7 +190,7 @@ public class NotificationService extends Service{
                     50.081872, 14.430000, distanceResults);
         }
 
-        if (distanceResults[0] <= 1500){
+        if (distanceResults[0] <= 15000){
             for (XmlParser.Entry entry : movieEntries) {
                 createNotification(entry, urlString);
             }
@@ -241,7 +241,7 @@ public class NotificationService extends Service{
             String[] todayHoursMinutes = todayTimeString.split(":");
             int movieHours = (Integer.parseInt(movieHoursMinutes[0])*60) + Integer.parseInt(movieHoursMinutes[1]);
             int todayHours = (Integer.parseInt(todayHoursMinutes[0])*60) + Integer.parseInt(todayHoursMinutes[1]);
-            if (movieDate.equals(todayString) && (movieHours - todayHours) <= 60 && (movieHours - todayHours) > 0) {
+            if (movieDate.equals(todayString) /*&& (movieHours - todayHours) <= 60 && (movieHours - todayHours) > 0*/) {
                 //create notification
                 String[] title = entry.getTitle().split(" \\(");
                 remoteViews.setTextViewText(R.id.NotificationTitle, title[0]);

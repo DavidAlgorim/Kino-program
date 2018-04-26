@@ -46,6 +46,9 @@
                 <action android:name="notification_button_clicked" />
             </intent-filter>
         </receiver>
+        <activity
+            android:name=".NotificaionButtonListener"
+            android:label="@string/title_activity_maps"/>
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -60,7 +63,7 @@
 
         <activity
             android:name=".MapsActivity"
-            android:label="@string/title_activity_maps"></activity>
+            android:label="@string/title_activity_maps"/>
         <service
             android:name=".NotificationService"
             android:label="@string/app_name">

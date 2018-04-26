@@ -1,6 +1,7 @@
 package com.example.david.kinoprogram;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.net.Uri;
 import android.os.Bundle;
@@ -10,6 +11,7 @@ import android.text.Spanned;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -23,6 +25,7 @@ import java.util.regex.Pattern;
 public class MovieDetailFragment extends Fragment {
 
     private static XmlParser.Entry movie;
+    private static String cinemaName;
     private String descriptionInfo;
     private String directorString;
     private String originString;
@@ -31,8 +34,9 @@ public class MovieDetailFragment extends Fragment {
     private String durationString;
     private View progressView;
 
-    public static MovieDetailFragment newInstance(XmlParser.Entry entry) {
+    public static MovieDetailFragment newInstance(XmlParser.Entry entry, String name) {
         movie = entry;
+        cinemaName = name;
         MovieDetailFragment fragment = new MovieDetailFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);
@@ -58,6 +62,16 @@ public class MovieDetailFragment extends Fragment {
         TextView yearText = (TextView)view.findViewById(R.id.MovieDetailYearString);
         TextView languageText = (TextView)view.findViewById(R.id.MovieDetailLanguageString);
         TextView durationText = (TextView)view.findViewById(R.id.MovieDetailDurationString);
+
+        Button rezervationButton = (Button)view.findViewById(R.id.MovieDetailButton);
+        rezervationButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Intent.ACTION_DIAL);
+                intent.setData(Uri.parse("tel:608330088"));
+                startActivity(intent);
+            }
+        });
 
         progressView = (LinearLayout)view.findViewById(R.id.MovieDetailProgressBar);
 
