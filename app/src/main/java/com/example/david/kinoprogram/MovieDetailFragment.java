@@ -15,6 +15,9 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.SupportMapFragment;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -33,6 +36,7 @@ public class MovieDetailFragment extends Fragment {
     private String languageString;
     private String durationString;
     private View progressView;
+    private View contentView;
 
     public static MovieDetailFragment newInstance(XmlParser.Entry entry, String name) {
         movie = entry;
@@ -74,6 +78,7 @@ public class MovieDetailFragment extends Fragment {
         });
 
         progressView = (LinearLayout)view.findViewById(R.id.MovieDetailProgressBar);
+        contentView = (LinearLayout)view.findViewById(R.id.MovieDetailContent);
 
 
         if (movie != null)
@@ -95,7 +100,11 @@ public class MovieDetailFragment extends Fragment {
             languageText.setText(R.string.language);
             durationText.setText(R.string.duration);
             progressView.setVisibility(View.GONE);
+            contentView.setVisibility(View.VISIBLE);
         }
+
+        MapFragment mapFragment = (MapFragment) getFragmentManager()
+                .findFragmentById(R.id.MapDetail);
 
         return view;
     }

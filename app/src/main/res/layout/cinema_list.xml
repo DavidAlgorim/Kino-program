@@ -31,18 +31,9 @@
         <ListView
             android:id="@+id/CinemaListView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"></ListView>
-        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:tools="http://schemas.android.com/tools"
-            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:context="com.example.david.kinoprogram.MainActivity"
-            android:visibility="gone">
-            <WebView xmlns:android="http://schemas.android.com/apk/res/android"
-                android:id="@+id/webview"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent" />
-        </RelativeLayout>
+            android:divider="@drawable/list_divider"
+            android:dividerHeight="2px"/>
 
     </android.support.constraint.ConstraintLayout>
 

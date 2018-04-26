@@ -35,11 +35,6 @@
             android:label="@string/title_activity_movie_list"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".MovieDetail"
-            android:label="@string/title_activity_movie_detail"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
 
         <receiver android:name=".NotificaionButtonListener">
             <intent-filter>
