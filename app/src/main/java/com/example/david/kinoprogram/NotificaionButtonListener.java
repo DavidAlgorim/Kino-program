@@ -20,6 +20,5 @@ public class NotificaionButtonListener extends BroadcastReceiver {
         Intent dialIntent = new Intent(Intent.ACTION_DIAL);
         dialIntent.setData(Uri.parse("tel:608330088"));
         context.startActivity(dialIntent);
-        Toast.makeText(context, "Clicked", Toast.LENGTH_LONG).show();
     }
 }

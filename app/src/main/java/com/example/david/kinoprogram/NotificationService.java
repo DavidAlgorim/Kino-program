@@ -257,7 +257,7 @@ public class NotificationService extends Service{
                 notification_intent.putExtra("second", name);
                 PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, notification_intent, 0);
                 notificationBuilder = new NotificationCompat.Builder(getApplicationContext());
-                notificationBuilder.setSmallIcon(R.mipmap.ic_launcher)
+                notificationBuilder.setSmallIcon(R.mipmap.ic_movie)
                         .setAutoCancel(true)
                         .setCustomContentView(remoteViews)
                         .setContentIntent(pendingIntent);

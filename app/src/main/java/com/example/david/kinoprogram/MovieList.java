@@ -69,12 +69,8 @@ public class MovieList extends AppCompatActivity implements Serializable {
     private String intentExtraURL;
     private String intentExtraName;
     private List<XmlParser.Entry> movieEntries = null;
-
-    private NotificationCompat.Builder notificationBuilder;
-    private NotificationManager notificationManager;
-    private int notification_id;
-    private RemoteViews remoteViews;
     private Context context;
+    private XmlParser feedXmlParser;
 
     private GoogleMap mMap;
     private static final String FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
@@ -135,7 +131,7 @@ public class MovieList extends AppCompatActivity implements Serializable {
 
     private String loadXmlFromNetwork(String urlString) throws XmlPullParserException, IOException {
         InputStream stream = null;
-        XmlParser feedXmlParser = new XmlParser();
+        feedXmlParser = new XmlParser();
         StringBuilder htmlString = new StringBuilder();
         try {
             stream = downloadUrl(urlString);
@@ -145,13 +141,6 @@ public class MovieList extends AppCompatActivity implements Serializable {
                 stream.close();
             }
         }
-
-        /*if (distanceResults[0] <= 1500){
-            for (XmlParser.Entry entry : movieEntries) {
-                createNotification(entry);
-            }
-        }*/
-
 
         movieListView = (ListView) findViewById(R.id.MovieListView);
         listViewFragment = (View) findViewById(R.id.ListViewFragment);
@@ -246,7 +235,7 @@ public class MovieList extends AppCompatActivity implements Serializable {
         });
     }
 
-    public void getLocationPermission(){
+    private void getLocationPermission(){
         String[] permissions = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
         if (ContextCompat.checkSelfPermission(this.getApplicationContext(), FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
             if (ContextCompat.checkSelfPermission(this.getApplicationContext(), COURSE_LOCATION) == PackageManager.PERMISSION_GRANTED){
