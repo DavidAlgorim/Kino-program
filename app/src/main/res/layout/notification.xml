@@ -22,7 +22,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="16dp"
-                android:text="Title"/>
+                android:text="Title"
+                android:singleLine="true"/>
             <TextView
                 android:id="@+id/NotificationTime"
                 android:layout_width="match_parent"
